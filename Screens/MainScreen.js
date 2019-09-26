@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 
-import { Text, View, Animated, Easing } from 'react-native';
+import { Text, View, Animated, Easing, Modal  } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
 import Icon from "@expo/vector-icons/FontAwesome5";
 
+import Horarios from '../components/Horarios'
+
+import AnadirHorario from './AnadirHorario'
 
 class MainScreen extends Component {
 
-    state = {rotValue: '0deg'}
+    state = {
+                rotValue: '0deg',
+                modalHidden: false,
+            }
 
     spin= new Animated.Value(0)
 
@@ -35,15 +41,13 @@ class MainScreen extends Component {
 
     render() {
 
-        
-
-    
-        AnimatedIcon = Animated.createAnimatedComponent(Icon);
-
+        AnimatedIcon = Animated.createAnimatedComponent(Icon); 
+        if(this.state.modalHidden)
         return (
             <View style={{flex:1, backgroundColor: 'white'}}>
                 <View style={{height: '85%'}}>
 
+                
                 </View>
                 <View style={{height: '15%', alignItems: "flex-end", backgroundColor: 'white', justifyContent: "center"}}>
                     
@@ -61,7 +65,13 @@ class MainScreen extends Component {
                 </View>
             </View>
         );
+        else
+            return(
+                <AnadirHorario />
+            );
+
     }
+    ;
 }
 
 export default MainScreen;
