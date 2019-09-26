@@ -1,35 +1,45 @@
 import React, { Component } from 'react';
 
-import { Text, View, Animated } from 'react-native';
+import { Text, View, Animated, Easing } from 'react-native';
 
 import { Button } from 'react-native-elements';
 
-import Icon from "@expo/vector-icons/MaterialIcons";
+import Icon from "@expo/vector-icons/FontAwesome5";
+
 
 class MainScreen extends Component {
 
-    AnimatedIcon = Animated.createAnimatedComponent(Icon);
+    state = {rotValue: '0deg'}
 
-    spinValue = new Animated.Value(0);
+    spin= new Animated.Value(0)
 
-    _start = () => {
-        Animated.timing( 
-            this.spinValue,
-        {
-            toValue: 1,
-            duration: 3000,
-            easing: Easing.linear
-        }
-        ).start()
+
+    _startAnimation = () =>{
+        Animated.timing(this.spin,  {   
+                                        toValue: 1,
+                                        duration: 1500,
+                                        easing: Easing.linear
+                                    }
+                        )
+                        .start(() => { this.spin = new Animated.Value(0)})
+
+        this.setState({  
+                        rotValue: this.spin.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: ['0deg', '360deg']
+                        })
+        })
     }
-    
-    spin = this.spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg']
-    })
+            
 
 
     render() {
+
+        
+
+    
+        AnimatedIcon = Animated.createAnimatedComponent(Icon);
+
         return (
             <View style={{flex:1, backgroundColor: 'white'}}>
                 <View style={{height: '85%'}}>
@@ -41,14 +51,12 @@ class MainScreen extends Component {
                 <Button
                     buttonStyle={{height: 60, width: 60, borderRadius: 30, marginRight: '7%'}} 
                     icon={
-                        <this.AnimatedIcon
-                            name='add'
-                            size={40}
-                            color='white'
-                            style={{ transform: [{rotate: '20deg'}] }}
-                            
+                    <AnimatedIcon
+                        style={{transform: [{rotate: this.state.rotValue}], fontSize: 50}}
+                        name={"plus"}
                         />
-                    }           
+                    }       
+                    onPress = { () => this._startAnimation()}
                 />
                 </View>
             </View>
