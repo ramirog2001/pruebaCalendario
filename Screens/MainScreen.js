@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import { Text, View, Animated, Easing, Modal  } from 'react-native';
+import { Text, View, Animated, Easing  } from 'react-native';
+
+import Modal from 'react-native-modal';
 
 import { Button } from 'react-native-elements';
 
@@ -14,16 +16,19 @@ class MainScreen extends Component {
 
     state = {
                 rotValue: '0deg',
-                modalHidden: false,
+                modalHidden: true,
+                reminders: []
             }
 
     spin= new Animated.Value(0)
 
 
     _startAnimation = () =>{
+        this.changeModal();
+
         Animated.timing(this.spin,  {   
                                         toValue: 1,
-                                        duration: 1500,
+                                        duration: 500,
                                         easing: Easing.linear
                                     }
                         )
@@ -32,24 +37,45 @@ class MainScreen extends Component {
         this.setState({  
                         rotValue: this.spin.interpolate({
                             inputRange: [0, 1],
-                            outputRange: ['0deg', '360deg']
+                            outputRange: this.state.modalHidden ?  (['0deg', '90deg']) : (['90deg', '0deg'])
                         })
         })
     }
             
 
+    changeModal = () => {
+        modalHidden = !this.state.modalHidden
+        this.setState({modalHidden})
+    }
+
+    saveCalendar = (date, text) => {
+        e = this.state.reminders
+        save = {date, text}
+        e.push(save);
+        this.setState({reminders: e})
+    }
 
     render() {
 
         AnimatedIcon = Animated.createAnimatedComponent(Icon); 
-        if(this.state.modalHidden)
         return (
             <View style={{flex:1, backgroundColor: 'white'}}>
-                <View style={{height: '85%'}}>
-
                 
+                    <Modal
+                        isVisible={!this.state.modalHidden}
+                        animationIn='slideInUp'
+                        animationOut='slideOutDown'
+                        animationInTiming={500}
+                        animationOutTiming={500}
+                        >
+                        
+                        <AnadirHorario changeModal= {this._startAnimation} saveCalendar= {this.saveCalendar}/>
+                    
+                    </Modal>
+                <View style={{height: '100%'}}>
+                    <Horarios reminders = {this.state.reminders}/>
                 </View>
-                <View style={{height: '15%', alignItems: "flex-end", backgroundColor: 'white', justifyContent: "center"}}>
+                <View style={{position: 'absolute', bottom: 0, right: 0, height: '12%'}}>
                     
 
                 <Button
@@ -65,10 +91,6 @@ class MainScreen extends Component {
                 </View>
             </View>
         );
-        else
-            return(
-                <AnadirHorario />
-            );
 
     }
     ;
